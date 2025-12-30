@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: erdongleon/open-skills
+  IMAGE_NAME: minileon/open-skills
 
 jobs:
   docker-build:
