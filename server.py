@@ -22,6 +22,7 @@ from mcp.server.fastmcp import FastMCP, Context
 from playwright.async_api import async_playwright
 from bs4 import BeautifulSoup
 import socket
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 # --- CONFIGURATION & SETUP ---
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -732,4 +733,7 @@ async def get_skill_file(skill_name: str, filename: str) -> str:
 
 
 # Use the streamable_http_app as it's the modern standard
-app = mcp.streamable_http_app()
+base_app = mcp.streamable_http_app()
+
+# Add middleware to allow all host headers (needed for remote access via IP)
+app = TrustedHostMiddleware(base_app, allowed_hosts=["*"])
