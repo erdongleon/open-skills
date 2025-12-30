@@ -48,4 +48,4 @@ npx -y playwright@1.53.0 run-server --port 3000 --host 0.0.0.0 &
 # exec python mcp_main.py
 
 # Start FastAPI application
-exec uvicorn server:app --host 0.0.0.0 --port 8222 --workers 1 --no-access-log
+exec uvicorn server:app --host 0.0.0.0 --port 8222 --workers 1 --no-access-log --proxy-headers --forwarded-allow-ips='*'

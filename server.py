@@ -22,7 +22,7 @@ from mcp.server.fastmcp import FastMCP, Context
 from playwright.async_api import async_playwright
 from bs4 import BeautifulSoup
 import socket
-from starlette.middleware.trustedhost import TrustedHostMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 # --- CONFIGURATION & SETUP ---
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -735,5 +735,13 @@ async def get_skill_file(skill_name: str, filename: str) -> str:
 # Use the streamable_http_app as it's the modern standard
 base_app = mcp.streamable_http_app()
 
-# Add middleware to allow all host headers (needed for remote access via IP)
-app = TrustedHostMiddleware(base_app, allowed_hosts=["*"])
+class HostFixMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        # 强制修改请求头中的 Host 为 localhost，绕过所有安全限制
+        headers = dict(request.scope["headers"])
+        headers[b"host"] = b"localhost"
+        request.scope["headers"] = [(k, v) for k, v in headers.items()]
+        return await call_next(request)
+
+# 应用强制修复中间件
+app = HostFixMiddleware(base_app)
