@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: bandarlabs/open-skills
+  IMAGE_NAME: erdongleon/open-skills
 
 jobs:
   docker-build:
